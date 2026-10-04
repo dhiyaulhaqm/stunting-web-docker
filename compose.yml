@@ -1,0 +1,64 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: stunting-frontend
+    ports:
+      - "${APP_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - stunting_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: stunting-backend
+    environment:
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in Portainer environment variables.}
+      DB_USERNAME: ${DB_USERNAME:-stunting_user}
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in Portainer environment variables.}
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: ${DB_NAME:-db_stunting}
+      SEED_ADMIN_NAME: ${SEED_ADMIN_NAME:-Admin}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:?Set SEED_ADMIN_EMAIL in Portainer environment variables.}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?Set SEED_ADMIN_PASSWORD in Portainer environment variables.}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - stunting_network
+
+  mysql:
+    image: mysql:8.4
+    container_name: stunting-mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-db_stunting}
+      MYSQL_USER: ${DB_USERNAME:-stunting_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in Portainer environment variables.}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in Portainer environment variables.}
+    volumes:
+      - stunting_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - stunting_network
+
+networks:
+  stunting_network:
+    name: stunting_network
+
+volumes:
+  stunting_mysql_data:
+    name: stunting_mysql_data

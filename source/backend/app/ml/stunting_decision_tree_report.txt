@@ -1,0 +1,8 @@
+                precision    recall  f1-score   support
+
+      Stunting      0.745     0.732     0.739        56
+Tidak Stunting      0.957     0.960     0.959       349
+
+      accuracy                          0.928       405
+     macro avg      0.851     0.846     0.849       405
+  weighted avg      0.928     0.928     0.928       405

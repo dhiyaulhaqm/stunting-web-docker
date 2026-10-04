@@ -1,0 +1,32 @@
+{
+  "model_type": "DecisionTreeClassifier",
+  "artifact": "stunting_decision_tree_pipeline.joblib",
+  "dataset": "Data Baru.csv",
+  "features": [
+    "Usia_Bulan",
+    "Berat",
+    "Tinggi",
+    "Jenis Kelamin"
+  ],
+  "target": "Status_Stunting",
+  "classes": [
+    "Stunting",
+    "Tidak Stunting"
+  ],
+  "accuracy": 0.928395061728395,
+  "training_rows": 2024,
+  "class_distribution": {
+    "Tidak Stunting": 1743,
+    "Stunting": 281
+  },
+  "source_status_distribution": {
+    "Normal": 1743,
+    "Pendek": 228,
+    "Sangat Pendek": 53
+  },
+  "gender_values": [
+    "Laki-laki",
+    "Perempuan"
+  ],
+  "note": "Pipeline accepts a pandas DataFrame with columns: Usia_Bulan, Berat, Tinggi, Jenis Kelamin. Target is mapped from Data Baru.csv column Status."
+}
